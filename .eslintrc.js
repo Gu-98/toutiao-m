@@ -17,6 +17,9 @@ module.exports = {
   rules: {
     'no-console': 'off',
     'no-debugger': 'off',
-    'no-dupe-keys': 0
+    'space-before-function-paren': 0,
+    'spaced-comment': 0,
+    'no-unused-expressions': 0
+
   }
 }

@@ -9,3 +9,11 @@ export const getActicles = params => {
     params
   })
 }
+
+//获取文章
+export const getActiclesById = articleId => {
+  return request({
+    method: 'GET',
+    url: `/v1_0/articles/${articleId}`
+  })
+}

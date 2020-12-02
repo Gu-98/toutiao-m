@@ -17,12 +17,14 @@ module.exports = {
       // 如果是我们的样式，就按照 75 的 rootValue 来转换
       // rootValue两种类型：固定的数值或者函数 动态处理
       // postcss-pxtorem处理每个css文件的时候 都会来调用这个函数 它会把被处理的css文件相关的信息通过参数传递给该函数
-      rootValue ({ file }) {
+      rootValue({ file }) {
         return file.indexOf('vant') !== -1 ? 37.5 : 75
       },
       // 配置要转换的css属性
       // *表示所有
-      propList: ['*']
+      propList: ['*'],
+      //排除不要转换的样式资源
+      exclude: 'github-markdown'
     }
   }
 }
