@@ -64,10 +64,27 @@
         <!-- 文章内容 -->
         <div class="markdown-body article-content" v-html="acticle.content" ref="articleContentRef"></div>
         <van-divider>正文结束</van-divider>
+
+        <!-- 文章评论列表 -->
+        <comment-list
+          :source="acticle.art_id"
+          @total="totalComment=$event.total_count"
+          :list="commentList"
+          @reply-click="onReply"
+        ></comment-list>
+
+        <!-- /文章评论列表 -->
+
         <!-- 底部区域 -->
         <div class="article-bottom">
-          <van-button class="comment-btn" type="default" round size="small">写评论</van-button>
-          <van-icon name="comment-o" info="123" color="#777" />
+          <van-button
+            class="comment-btn"
+            type="default"
+            round
+            size="small"
+            @click="isPostShow=true"
+          >写评论</van-button>
+          <van-icon name="comment-o" :info="totalComment" color="#777" />
           <!-- <van-icon color="#777" name="star-o" /> -->
           <collect-article v-model="acticle.is_collected" :artId="acticle.art_id"></collect-article>
           <!-- <van-icon color="#777" name="good-job-o" /> -->
@@ -75,11 +92,27 @@
           <van-icon name="share" color="#777777"></van-icon>
         </div>
         <!-- /底部区域 -->
+        <!-- 发布评论弹出层 -->
+        <van-popup v-model="isPostShow" position="bottom">
+          <comment-post :target="acticle.art_id" @onPost-success="onPostSuccess"></comment-post>
+        </van-popup>
+        <!-- /发布评论弹出层 -->
       </div>
       <!-- /加载完成-文章详情 -->
 
+      <!-- 弹出层是懒渲染：只有在第一次展示的时候才会渲染里面的内容，之后的展示只是内容显示的切换 -->
+      <!-- 回复弹出层 -->
+      <van-popup v-model="isReplyShow" position="bottom" style=" height: 100% " class="reply">
+        <!-- v-if 条件渲染
+        true：渲染元素节点
+        false：不渲染
+        -->
+        <comment-reply :comment="currentComment" @close="isReplyShow=false" v-if="isReplyShow" />
+      </van-popup>
+      <!-- /回复弹出层 -->
+
       <!-- 加载失败：404 -->
-      <div class="error-wrap" v-else-if="errStatus===404">
+      <div class="error-wrap" v-if="errStatus===404">
         <van-icon name="failure" />
         <p class="text">该资源不存在或已删除！</p>
       </div>
@@ -103,12 +136,19 @@ import '@/utils/dayjs'
 import FollowUser from '@/components/follow-user/index'
 import CollectArticle from '@/components/collect-article/index'
 import GoodArticle from '@/components/good-article/index'
+import CommentList from '@/views/article/components/comment-list'
+import CommentPost from './components/comment-post.vue'
+import CommentReply from './components/comment-reply.vue'
+
 export default {
   name: 'ArticleDetail',
   components: {
     FollowUser,
     CollectArticle,
-    GoodArticle
+    GoodArticle,
+    CommentList,
+    CommentPost,
+    CommentReply
   },
   props: {
     articleId: {
@@ -120,12 +160,22 @@ export default {
     return {
       acticle: {}, //文章详情
       loading: true, //加载状态
-      errStatus: 0 //失败的状态码
+      errStatus: 0, //失败的状态码
+      totalComment: 0, //评论数量
+      isPostShow: false, //评论弹出层的显示与隐藏
+      commentList: [],
+      isReplyShow: false, //回复评论弹出层
+      currentComment: {}
     }
   },
   mounted() {},
   created() {
     this.loadArticle()
+  },
+  provide: function() {
+    return {
+      articleId: this.articleId
+    }
   },
   methods: {
     async loadArticle() {
@@ -169,6 +219,17 @@ export default {
           })
         }
       })
+    },
+    onPostSuccess(data) {
+      //关闭弹出层
+      this.isPostShow = false
+      //将文章内容更新至列表顶部
+      this.commentList.unshift(data.new_obj)
+    },
+    onReply(comment) {
+      // console.log(comment)
+      this.currentComment = comment
+      this.isReplyShow = true
     }
   }
 }
@@ -287,6 +348,10 @@ export default {
         background-color: #e22829;
       }
     }
+  }
+
+  .van-nav-bar {
+    z-index: unset;
   }
 }
 </style>

@@ -41,7 +41,7 @@ export default {
         if (this.attitude === 1) {
           //已点赞 执行取消点赞
           await notGoodArticle(this.articleId)
-          this.attitude === -1
+          this.attitude === 0
           this.$toast.success('取消点赞')
         } else {
           //未点赞 执行点赞
@@ -49,7 +49,7 @@ export default {
           this.attitude === 1
           this.$toast.success('点赞成功')
         }
-        this.$emit('updatelike', this.attitude === 1 ? -1 : 1)
+        this.$emit('updatelike', this.attitude === 1 ? 0 : 1)
       } catch (error) {
         this.$toast('操作失败，请稍后重试', error)
       }
