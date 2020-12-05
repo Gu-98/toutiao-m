@@ -17,7 +17,10 @@ const routes = [
       {
         path: '', // 默认子路由 只能有一个
         name: 'home',
-        component: () => import('@/views/home')
+        component: () => import('@/views/home'),
+        meta: {
+          keepAlive: true //需要被缓存
+        }
       },
       {
         path: '/qa',
@@ -45,7 +48,10 @@ const routes = [
     path: '/article/:articleId',
     name: 'article',
     component: () => import('@/views/article'),
-    props: true
+    props: true,
+    meta: {
+      keepAlive: true //需要被缓存
+    }
     // 开启props传参 就是把路由参数映射到组件中的props属性中
   },
   {

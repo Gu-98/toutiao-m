@@ -1,7 +1,14 @@
 <template>
   <div class="layout-container">
     <!-- 子路由占位符 -->
-    <router-view></router-view>
+    <keep-alive>
+      <!-- 需要缓存的视图组件 -->
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
+
+    <!-- 不需要缓存的视图组件 -->
+    <router-view v-if="!$route.meta.keepAlive"></router-view>
+
     <!-- /子路由占位符 -->
 
     <!-- 标签导航栏 -->
@@ -32,11 +39,11 @@
 export default {
   name: 'LayoutIndex',
   components: {},
-  data () {
+  data() {
     return {}
   },
-  mounted () {},
-  created () {},
+  mounted() {},
+  created() {},
   methods: {}
 }
 </script>

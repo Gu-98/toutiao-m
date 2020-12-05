@@ -1,5 +1,5 @@
 <template>
-  <div class="article-list">
+  <div class="article-list" ref="listBox">
     <van-pull-refresh
       v-model="isreFrenshLoading"
       @refresh="onRefresh"
@@ -35,7 +35,7 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {
       list: [], // 存储列表数据的数组
       loading: false, // 控制加载中loading状态
@@ -43,14 +43,23 @@ export default {
       timestamp: null, // 请求获取并保存下一页时间戳
       error: false, // 是否加载失败
       isreFrenshLoading: false, // 控制下拉刷新加载的状态
-      reFrenshSuccessText: '' // 下拉刷新成功提示文本
+      reFrenshSuccessText: '', // 下拉刷新成功提示文本
+      scrollTop: 0
     }
   },
-  mounted () {},
-  created () {},
+  mounted() {
+    const self = this
+    this.$refs.listBox.onscroll = function() {
+      self.scrollTop = this.scrollTop
+    }
+  },
+  created() {},
+  activated() {
+    this.$refs.listBox.scrollTop = this.scrollTop
+  },
   methods: {
     //   初始化或滚动底部的时候会触发调用onload
-    async onLoad () {
+    async onLoad() {
       // 异步更新数据
       try {
         //   1.请求获取数据
@@ -85,7 +94,7 @@ export default {
         this.loading = false
       }
     },
-    async onRefresh () {
+    async onRefresh() {
       try {
         // 请求获取数据
         const { data } = await getActicles({
