@@ -3,12 +3,12 @@
     <div class="header user-info" v-if="user">
       <div class="base-info">
         <div class="left">
-          <!-- <van-image class="avatar" :src="userInfo.photo" round fit="cover" /> -->
-          <van-image class="avatar" :src="require('@/assets/mobile.png')" round fit="cover" />
+          <van-image class="avatar" :src="userInfo.photo" round fit="cover" />
+          <!-- <van-image class="avatar" :src="require('@/assets/mobile.png')" round fit="cover" /> -->
           <span class="name">{{userInfo.name}}</span>
         </div>
         <div class="right">
-          <van-button type="default" size="mini" round>编辑资料</van-button>
+          <van-button type="default" size="mini" round to="/user/profile">编辑资料</van-button>
         </div>
       </div>
       <div class="data-stats">
@@ -62,20 +62,20 @@ import { getUserInfo } from '@/api/user'
 export default {
   name: 'MyIndex',
   components: {},
-  data () {
+  data() {
     return {
       userInfo: {} // 用户信息
     }
   },
-  mounted () {},
-  created () {
+  mounted() {},
+  created() {
     // 如果用户登录了 则请求加载用户信息
     if (this.user) {
       this.loadUserInfo()
     }
   },
   methods: {
-    onlogOut () {
+    onlogOut() {
       // 退出提示
 
       // 在组件中需要使用this.$dialog来调用
@@ -91,7 +91,7 @@ export default {
           // on cancel
         })
     },
-    async loadUserInfo () {
+    async loadUserInfo() {
       try {
         const { data } = await getUserInfo()
         //
